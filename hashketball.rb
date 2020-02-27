@@ -397,6 +397,7 @@ end
     
 # BONUS QUESTIONS
 
+=begin
 def most_points
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -434,6 +435,45 @@ end
     at_player_index +=1
   end  
 end
+=end
+
+# Refactored most_points_scored to respect DRY  
+
+def most_points
+  all_points = []
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+          data.each do |index|
+            all_points << index[:points]
+            end
+          end
+          end
+        end
+    end
+    all_points.max
+  end
+
+
+
+def most_points_scored
+game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+          data.each do |index|
+            if index[:points] == most_points
+              return index[:player_name]
+            end
+          end
+          end
+        end
+      end
+    end
+  end
+  
+  
 
 def winning_team
   home_team = game_hash[:home]
