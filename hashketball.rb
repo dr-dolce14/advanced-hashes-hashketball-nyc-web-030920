@@ -564,6 +564,7 @@ end
   
 # SUPER BONUS
 
+=begin
 def most_steals
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -600,4 +601,25 @@ def long_name_steals_a_ton?
     end
     at_player_index +=1
   end
+end
+=end
+
+#Refactored long_name_steals_a_ton? to respect DRY
+
+def long_name_steals_a_ton?
+   all_steals = []
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+    team_info_hash.each do |attribute, data|
+    if attribute == :players
+     data.each do |index|
+    all_steals << index[:steals]
+    if index[:player_name] == player_with_longest_name && index[:steals] == all_steals.max
+      return true
+    end   
+    end    
+  end
+end
+end
+end
 end
