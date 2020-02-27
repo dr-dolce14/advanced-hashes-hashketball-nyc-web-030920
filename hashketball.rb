@@ -474,7 +474,7 @@ game_hash.each do |team, team_info_hash|
   end
   
   
-
+=begin
 def winning_team
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -492,6 +492,37 @@ def winning_team
   end
   ht_points.sum > at_points.sum ? home_team[:team_name] : away_team[:team_name]
 end
+=end
+
+#Refactored winning_team to respect DRY 
+
+def winning_team
+  home_points = []
+  away_points = []
+   game_hash.each do |team, team_info_hash|
+    if team == :home 
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+          data.each do |index|
+            home_points << index[:points]
+            end
+          end
+          end
+        end
+      if team == :away
+        team_info_hash.each do |attribute, data|
+          if attribute == :players
+            data.each do |index|
+              away_points << index[:points]
+            end
+          end
+        end
+      end
+    end
+    home_points.sum > away_points.sum ? game_hash[:home][:team_name] : game_hash[:away][:team_name]
+  end
+
+
 
 def player_with_longest_name
   home_team = game_hash[:home]
