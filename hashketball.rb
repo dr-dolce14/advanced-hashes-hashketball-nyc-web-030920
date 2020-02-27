@@ -523,7 +523,7 @@ def winning_team
   end
 
 
-
+=begin
 def player_with_longest_name
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -541,7 +541,27 @@ def player_with_longest_name
   end
   (ht_players + at_players).max_by{|player| player.length}
 end
+=end
 
+# Refactored player_with_longest_name to respect DRY 
+
+ def player_with_longest_name
+  all_names = []
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+          data.each do |index|
+            all_names << index[:player_name]
+            end
+          end
+          end
+        end
+    end
+    all_names.max_by{|player| player.length}
+  end
+  
+  
 # SUPER BONUS
 
 def most_steals
