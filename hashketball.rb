@@ -114,6 +114,7 @@ def game_hash
           }
 end
 
+=begin
 def get_player_stats(name)
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -146,7 +147,46 @@ def shoe_size(name)
     return player_hash[:shoe]
   end
 end
+=end
 
+#Refactored num_points_scored to respect DRY 
+
+def num_points_scored(name)
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+     data.each do |index|
+      if index[:player_name] == name
+        return index[:points]
+        end
+          end  
+        end        
+          end
+        end
+      end
+    end
+
+# Refactored shoe_size to respect DRY 
+
+def shoe_size(name)
+game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+     data.each do |index|
+      if index[:player_name] == name
+        return index[:shoe]
+        end
+          end  
+        end        
+          end
+        end
+      end
+    end
+
+
+=begin
 def team_colors(team_name)
 if 
   team_name == game_hash[:home][:team_name]
@@ -156,6 +196,25 @@ else
   return game_hash[:away][:colors]
 end
 end
+=end
+
+
+#Refactored team_colors(team_name) to respect DRY   
+
+def team_colors(team_name)
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute|
+        if team_info_hash[:team_name] == team_name
+            return team_info_hash[:colors]
+          end
+        end
+      end
+    end
+  end
+
+
+
 
 def team_names
   teams = []
@@ -163,6 +222,8 @@ def team_names
   teams << game_hash[:away][:team_name]
 end
 
+
+=begin
 def player_numbers(team_name)
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -184,8 +245,31 @@ def player_numbers(team_name)
 end
 home_team_numbers.empty? ? away_team_numbers : home_team_numbers
 end
+=end
 
-def player_stats(name)
+#Refactored player_numbers(team_name) to respect DRY
+
+def player_numbers(team_name)
+  jersey_numbers = []
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if team_info_hash[:team_name] == team_name
+        if attribute == :players
+     data.each do |index, number|
+      jersey_numbers << index[:number]
+          end  
+        end        
+          end
+        end
+      end
+    end
+    jersey_numbers
+  end
+  
+
+=begin
+ def player_stats(name)
   home_team = game_hash[:home]
   away_team = game_hash[:away]
   ht_player_hash = {}
@@ -223,7 +307,29 @@ def player_stats(name)
     end
     end
     end
-    
+=end
+  
+  # Refactored player_stats(name) to respect DRY  
+  
+  def player_stats(name)
+    game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+      team_info_hash.each do |attribute, data|
+        if attribute == :players
+     data.each do |index, stats|
+      if index[:player_name] == name
+      index.delete(:player_name)
+      return index
+      end
+    end
+  end
+end
+end
+end
+end
+
+
+=begin    
   def biggest_shoe_size
   home_team = game_hash[:home]
   away_team = game_hash[:away]
@@ -261,6 +367,33 @@ end
     at_player_index +=1
   end
 end
+=end
+
+#Refactored big_shoe_rebounds to respect DRY
+
+def big_shoe_rebounds
+  all_shoes = []
+  game_hash.each do |team, team_info_hash|
+    if team == :home || :away
+    team_info_hash.each do |attribute, data|
+    if attribute == :players
+     data.each do |index|
+    all_shoes << index[:shoe]
+    all_shoes.max
+    end   
+    end
+    if attribute == :players
+      data.each do |index|
+        if index[:shoe] == all_shoes.max
+          return index[:rebounds]
+    end
+    end
+    end
+  end
+  end
+end
+end
+
     
 # BONUS QUESTIONS
 
